@@ -12,11 +12,11 @@ class CreateOrganizationsTable extends Migration
     public function up()
     {
         Schema::create('organizations', function (Blueprint $table) {
-            $table->id(); // ID
-            $table->string('name'); // Название организации
-            $table->string('phone_numbers')->nullable(); // Номера телефонов (можно хранить как строку или отдельную таблицу для телефонов)
-            $table->foreignId('building_id')->constrained()->onDelete('cascade'); // Связь с таблицей зданий
-            $table->timestamps(); // Время создания и обновления
+            $table->id();
+            $table->string('name');
+            $table->string('phone_numbers')->nullable();
+            $table->foreignId('building_id')->constrained()->onDelete('cascade');
+            $table->timestamps();
         });
     }
 

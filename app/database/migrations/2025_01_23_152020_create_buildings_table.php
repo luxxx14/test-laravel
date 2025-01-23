@@ -13,9 +13,9 @@ class CreateBuildingsTable extends Migration
     {
         Schema::create('buildings', function (Blueprint $table) {
             $table->id();
-            $table->string('address'); // Адрес здания
-            $table->decimal('latitude', 10, 7); // Широта
-            $table->decimal('longitude', 10, 7); // Долгота
+            $table->string('address');
+            $table->decimal('latitude', 10, 7);
+            $table->decimal('longitude', 10, 7);
             $table->timestamps();
         });
     }

@@ -13,8 +13,8 @@ class CreateActivitiesTable extends Migration
     {
         Schema::create('activities', function (Blueprint $table) {
             $table->id();
-            $table->string('name'); // Название вида деятельности
-            $table->foreignId('parent_id')->nullable()->constrained('activities')->onDelete('cascade'); // Вложенные виды деятельности
+            $table->string('name');
+            $table->foreignId('parent_id')->nullable()->constrained('activities')->onDelete('cascade');
             $table->timestamps();
         });
     }
