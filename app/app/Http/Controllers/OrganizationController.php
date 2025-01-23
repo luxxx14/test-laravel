@@ -7,17 +7,33 @@ use App\Models\Activity;
 use App\Models\Building;
 use Illuminate\Http\Request;
 
+/**
+ * @OA\Info(title="Organization API", version="1.0", description="API для работы с организациями, зданиями и деятельностями.")
+ * @OA\Server(url="http://localhost/api", description="Основной сервер API")
+ */
 class OrganizationController extends Controller
 {
-    public function __construct(Request $request)
-    {
-        // Проверка API-ключа
-        if ($request->header('X-API-KEY') !== env('API_KEY', 'default-key')) {
-            abort(401, 'Unauthorized: Invalid API Key');
-        }
-    }
-
-    // Список всех организаций в конкретном здании
+    
+    /**
+     * @OA\Get(
+     *     path="/api/organizations/building/{buildingId}",
+     *     summary="Список всех организаций в здании",
+     *     description="Получить список всех организаций, находящихся в здании по его ID",
+     *     @OA\Parameter(
+     *         name="buildingId",
+     *         in="path",
+     *         required=true,
+     *         description="ID здания",
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Список организаций",
+     *         @OA\JsonContent(type="array", @OA\Items(ref="#/components/schemas/Organization"))
+     *     ),
+     *     @OA\Response(response=404, description="Здание не найдено")
+     * )
+     */
     public function getOrganizationsByBuilding($buildingId)
     {
         $building = Building::find($buildingId);
@@ -29,7 +45,26 @@ class OrganizationController extends Controller
         return response()->json($organizations);
     }
 
-    // Список организаций по виду деятельности
+    /**
+     * @OA\Get(
+     *     path="/api/organizations/activity/{activityId}",
+     *     summary="Список организаций по виду деятельности",
+     *     description="Получить список организаций, которые выполняют указанный вид деятельности",
+     *     @OA\Parameter(
+     *         name="activityId",
+     *         in="path",
+     *         required=true,
+     *         description="ID вида деятельности",
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Список организаций по виду деятельности",
+     *         @OA\JsonContent(type="array", @OA\Items(ref="#/components/schemas/Organization"))
+     *     ),
+     *     @OA\Response(response=404, description="Вид деятельности не найден")
+     * )
+     */
     public function getOrganizationsByActivity($activityId)
     {
         $activity = Activity::find($activityId);
@@ -44,7 +79,40 @@ class OrganizationController extends Controller
         return response()->json($organizations);
     }
 
-    // Список организаций в заданном радиусе
+    /**
+     * @OA\Get(
+     *     path="/api/organizations/radius",
+     *     summary="Список организаций в радиусе",
+     *     description="Получить список организаций в заданном радиусе от определенной точки",
+     *     @OA\Parameter(
+     *         name="latitude",
+     *         in="query",
+     *         required=true,
+     *         description="Широта точки",
+     *         @OA\Schema(type="number", format="float")
+     *     ),
+     *     @OA\Parameter(
+     *         name="longitude",
+     *         in="query",
+     *         required=true,
+     *         description="Долгота точки",
+     *         @OA\Schema(type="number", format="float")
+     *     ),
+     *     @OA\Parameter(
+     *         name="radius",
+     *         in="query",
+     *         required=true,
+     *         description="Радиус поиска в метрах",
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Список организаций в радиусе",
+     *         @OA\JsonContent(type="array", @OA\Items(ref="#/components/schemas/Organization"))
+     *     ),
+     *     @OA\Response(response=400, description="Неверные параметры")
+     * )
+     */
     public function getOrganizationsByRadius(Request $request)
     {
         $request->validate([
@@ -67,7 +135,26 @@ class OrganizationController extends Controller
         return response()->json($organizations);
     }
 
-    // Получить информацию об организации по ID
+    /**
+     * @OA\Get(
+     *     path="/api/organizations/{id}",
+     *     summary="Получить организацию по ID",
+     *     description="Получить информацию о организации по её ID",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         description="ID организации",
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Информация об организации",
+     *         @OA\JsonContent(ref="#/components/schemas/Organization")
+     *     ),
+     *     @OA\Response(response=404, description="Организация не найдена")
+     * )
+     */
     public function getOrganizationById(Request $request)
     {
         $request->validate([
@@ -79,7 +166,26 @@ class OrganizationController extends Controller
         return response()->json($organization);
     }
 
-    // Поиск организаций по виду деятельности (включая вложенные)
+    /**
+     * @OA\Get(
+     *     path="/api/organizations/activity/tree/{activityId}",
+     *     summary="Поиск организаций по виду деятельности с учетом вложенности",
+     *     description="Поиск организаций по виду деятельности, включая вложенные виды деятельности",
+     *     @OA\Parameter(
+     *         name="activityId",
+     *         in="path",
+     *         required=true,
+     *         description="ID вида деятельности",
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Список организаций с учетом вложенности",
+     *         @OA\JsonContent(type="array", @OA\Items(ref="#/components/schemas/Organization"))
+     *     ),
+     *     @OA\Response(response=404, description="Вид деятельности не найден")
+     * )
+     */
     public function searchOrganizationsByActivity(Request $request)
     {
         $request->validate([
@@ -103,7 +209,26 @@ class OrganizationController extends Controller
         return response()->json($organizations);
     }
 
-    // Поиск организаций по названию
+    /**
+     * @OA\Get(
+     *     path="/api/organizations/search",
+     *     summary="Поиск организаций по названию",
+     *     description="Поиск организаций по названию",
+     *     @OA\Parameter(
+     *         name="name",
+     *         in="query",
+     *         required=true,
+     *         description="Название организации",
+     *         @OA\Schema(type="string")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Список организаций по названию",
+     *         @OA\JsonContent(type="array", @OA\Items(ref="#/components/schemas/Organization"))
+     *     ),
+     *     @OA\Response(response=404, description="Организация не найдена")
+     * )
+     */
     public function searchOrganizationsByName(Request $request)
     {
         $request->validate([
