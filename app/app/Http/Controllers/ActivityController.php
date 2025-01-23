@@ -23,12 +23,12 @@ class ActivityController extends Controller
         /**
      * @OA\Get(
      *     path="/api/activities",
-     *     summary="Get all activities",
-     *     description="Retrieve a list of all activities.",
+     *     summary="Список всех видов деятельности",
+     *     description="Список всех видов деятельности",
      *     tags={"Activity"},
      *     @OA\Response(
      *         response=200,
-     *         description="List of activities",
+     *         description="Список всех видов деятельности",
      *         @OA\JsonContent(
      *             type="array",
      *             @OA\Items(ref="#/components/schemas/Activity")

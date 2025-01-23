@@ -5,9 +5,9 @@
  *     schema="Activity",
  *     type="object",
  *     required={"name"},
- *     @OA\Property(property="id", type="integer", description="ID of the activity"),
- *     @OA\Property(property="name", type="string", description="Name of the activity"),
- *     @OA\Property(property="parent_id", type="integer", description="ID of the parent activity")
+ *     @OA\Property(property="id", type="integer", description="ID деятельности"),
+ *     @OA\Property(property="name", type="string", description="Название деятельности"),
+ *     @OA\Property(property="parent_id", type="integer", description="ID родительской деятельности")
  * )
  */
 

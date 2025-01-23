@@ -22,12 +22,12 @@ class BuildingController extends Controller
     /**
      * @OA\Get(
      *     path="/api/buildings",
-     *     summary="Get all buildings",
-     *     description="Retrieve a list of all buildings.",
+     *     summary="Список всех зданий",
+     *     description="Список всех зданий",
      *     tags={"Building"},
      *     @OA\Response(
      *         response=200,
-     *         description="List of buildings",
+     *         description="Список всех зданий",
      *         @OA\JsonContent(
      *             type="array",
      *             @OA\Items(ref="#/components/schemas/Building")

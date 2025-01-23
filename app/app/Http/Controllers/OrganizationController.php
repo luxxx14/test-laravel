@@ -8,8 +8,8 @@ use App\Models\Building;
 use Illuminate\Http\Request;
 
 /**
- * @OA\Info(title="Organization API", version="1.0", description="API для работы с организациями, зданиями и деятельностями.")
- * @OA\Server(url="http://localhost/api", description="Основной сервер API")
+ * @OA\Info(title="Organization API", version="1.0")
+ * @OA\Server(url="http://localhost/api")
  */
 class OrganizationController extends Controller
 {
