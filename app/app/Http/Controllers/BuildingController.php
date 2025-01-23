@@ -5,6 +5,10 @@ namespace App\Http\Controllers;
 use App\Models\Building;
 use Illuminate\Http\Request;
 
+/**
+ * @OA\Info(title="Building API", version="1.0")
+ * @OA\Server(url="http://localhost/api")
+ */
 class BuildingController extends Controller
 {
     public function __construct(Request $request)
@@ -15,7 +19,26 @@ class BuildingController extends Controller
         }
     }
 
-    // Список всех зданий
+    /**
+     * @OA\Get(
+     *     path="/api/buildings",
+     *     summary="Get all buildings",
+     *     description="Retrieve a list of all buildings.",
+     *     tags={"Building"},
+     *     @OA\Response(
+     *         response=200,
+     *         description="List of buildings",
+     *         @OA\JsonContent(
+     *             type="array",
+     *             @OA\Items(ref="#/components/schemas/Building")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="No buildings found"
+     *     ),
+     * )
+     */
     public function index()
     {
         $buildings = Building::all();

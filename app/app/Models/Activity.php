@@ -1,5 +1,16 @@
 <?php
 
+/**
+ * @OA\Schema(
+ *     schema="Activity",
+ *     type="object",
+ *     required={"name"},
+ *     @OA\Property(property="id", type="integer", description="ID of the activity"),
+ *     @OA\Property(property="name", type="string", description="Name of the activity"),
+ *     @OA\Property(property="parent_id", type="integer", description="ID of the parent activity")
+ * )
+ */
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
