@@ -1,13 +1,9 @@
 # Makefile
 
-.PHONY: up build install migrate seed
+.PHONY: up install migrate seed down
 
 # Поднятие контейнеров, установка зависимостей, запуск миграций и сидеров
-up: build install migrate seed
-
-# Сборка контейнеров
-build:
-	docker-compose build
+up: install migrate seed
 
 # Установка зависимостей Composer и NPM
 install:
