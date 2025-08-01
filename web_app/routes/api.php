@@ -5,7 +5,7 @@ use App\Http\Controllers\OrganizationController;
 use App\Http\Controllers\BuildingController;
 use App\Http\Controllers\ActivityController;
 
-Route::prefix('api')->group(function () {
+Route::middleware('api_key')->prefix('api')->group(function () {
 
     // Здания
     Route::get('/buildings', [BuildingController::class, 'index']);

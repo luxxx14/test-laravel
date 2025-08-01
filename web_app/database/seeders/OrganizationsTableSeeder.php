@@ -12,7 +12,7 @@ class OrganizationsTableSeeder extends Seeder
         DB::table('organizations')->insert([
             [
                 'name' => 'ООО Рога и Копыта',
-                'phone_numbers' => '2-222-222, 3-333-333',
+                'phone_numbers' => ['2-222-222', '3-333-333'],
                 'building_id' => 1,
                 'created_at' => now(),
                 'updated_at' => now(),

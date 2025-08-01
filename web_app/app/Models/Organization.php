@@ -15,14 +15,11 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Organization extends Model
 {
-    use HasFactory;
-
-    protected $fillable = ['name', 'building_id'];
+    protected $fillable = ['name', 'phone_numbers', 'building_id'];
 
     public function building()
     {
@@ -34,3 +31,4 @@ class Organization extends Model
         return $this->belongsToMany(Activity::class);
     }
 }
+

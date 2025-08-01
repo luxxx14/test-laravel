@@ -4,18 +4,17 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateOrganizationsTable extends Migration
+class CreateActivitiesTable extends Migration
 {
     /**
      * @return void
      */
     public function up()
     {
-        Schema::create('organizations', function (Blueprint $table) {
+        Schema::create('activities', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('phone_numbers')->nullable();
-            $table->foreignId('building_id')->constrained()->onDelete('cascade');
+            $table->foreignId('parent_id')->nullable()->constrained('activities')->onDelete('restrict');
             $table->timestamps();
         });
     }
@@ -25,6 +24,6 @@ class CreateOrganizationsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('organizations');
+        Schema::dropIfExists('activities');
     }
 }

@@ -1,38 +1,32 @@
-# Используем официальный образ PHP с Nginx
-FROM php:7.4-fpm-alpine
+FROM php:8.2-fpm
 
-# Устанавливаем зависимости
-RUN apk update && apk add --no-cache \
-    libpng-dev \
-    libjpeg-turbo-dev \
-    libfreetype6-dev \
-    libxml2-dev \
+# Устанавливаем необходимые зависимости
+RUN apt-get update && apt-get install -y \
     git \
-    bash \
-    zlib-dev \
+    unzip \
+    curl \
+    libonig-dev \
     libzip-dev \
-    icu-dev \
-    oniguruma-dev \
-    && docker-php-ext-configure gd --with-freetype --with-jpeg \
-    && docker-php-ext-install gd pdo pdo_mysql zip intl opcache
+    zip \
+    && docker-php-ext-install pdo_mysql mbstring zip
 
 # Устанавливаем Composer
-RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
-# Устанавливаем рабочую директорию для приложения
+# Рабочая директория в Laravel
 WORKDIR /var/www
 
-# Копируем только код проекта
-COPY . /var/www
+# Создаем директории для storage и bootstrap/cache, если их нет
+RUN mkdir -p /var/www/storage /var/www/bootstrap/cache
 
-# Устанавливаем права на директории storage и bootstrap/cache
+# Устанавливаем правильные права для папок storage и bootstrap/cache
+RUN chown -R www-data:www-data /var/www && \
+    chmod -R 775 /var/www/storage /var/www/bootstrap/cache
+
+# Устанавливаем права для всей директории проекта
+RUN chmod -R 755 /var/www && \
+    chown -R www-data:www-data /var/www
+
+# Устанавливаем права на запись для нужных директорий
 RUN chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache
-
-# Устанавливаем рабочий пользователь для контейнера
-USER www-data
-
-# Открываем порт 9000 для PHP-FPM
-EXPOSE 9000
-
-# Запускаем PHP-FPM
-CMD ["php-fpm"]
+RUN chmod -R 775 /var/www/storage /var/www/bootstrap/cache
