@@ -6,9 +6,6 @@ use Illuminate\Support\Facades\Schema;
 
 class CreateOrganizationsTable extends Migration
 {
-  /**
-   * @return void
-   */
   public function up()
   {
     Schema::create('organizations', function (Blueprint $table) {
@@ -20,9 +17,6 @@ class CreateOrganizationsTable extends Migration
     });
   }
 
-  /**
-   * @return void
-   */
   public function down()
   {
     Schema::dropIfExists('organizations');

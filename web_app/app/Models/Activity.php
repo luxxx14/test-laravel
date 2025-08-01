@@ -5,9 +5,7 @@
  *     schema="Activity",
  *     type="object",
  *     required={"name"},
- *     @OA\Property(property="id", type="integer", description="ID деятельности"),
- *     @OA\Property(property="name", type="string", description="Название деятельности"),
- *     @OA\Property(property="parent_id", type="integer", description="ID родительской деятельности")
+ *     @OA\Property(property="name", type="string", example="Молочная продукция")
  * )
  */
 
@@ -18,30 +16,30 @@ use Illuminate\Database\Eloquent\Model;
 
 class Activity extends Model
 {
-    use HasFactory;
+  use HasFactory;
 
-    protected $fillable = ['name', 'parent_id'];
+  protected $fillable = ['name', 'parent_id'];
 
-    // Связь с организациями
-    public function organizations()
-    {
-        return $this->belongsToMany(Organization::class);
-    }
+  // Связь с организациями
+  public function organizations()
+  {
+    return $this->belongsToMany(Organization::class);
+  }
 
-    // Связь с родительским видом деятельности
-    public function parent()
-    {
-        return $this->belongsTo(Activity::class, 'parent_id');
-    }
+  // Связь с родительским видом деятельности
+  public function parent()
+  {
+    return $this->belongsTo(Activity::class, 'parent_id');
+  }
 
-    // Связь с дочерними видами деятельности
-    public function children()
-    {
-        return $this->hasMany(Activity::class, 'parent_id');
-    }
+  // Связь с дочерними видами деятельности
+  public function children()
+  {
+    return $this->hasMany(Activity::class, 'parent_id');
+  }
 
-    public static function getWithParentAndChildren($id)
-    {
-        return self::with(['parent', 'children'])->find($id);
-    }
+  public static function getWithParentAndChildren($id)
+  {
+    return self::with(['parent', 'children'])->find($id);
+  }
 }

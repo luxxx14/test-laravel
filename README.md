@@ -7,5 +7,10 @@
 <a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
 </p>
 
-## About Laravel
+## Запуск приложения
 
+1. git clone https://github.com/luxxx14/test-laravel.git .
+2. make up
+
+## Остановка приложения
+1. make down

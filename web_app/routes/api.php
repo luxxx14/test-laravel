@@ -6,19 +6,14 @@ use App\Http\Controllers\BuildingController;
 use App\Http\Controllers\ActivityController;
 
 Route::middleware('api_key')->prefix('api')->group(function () {
+  Route::get('/buildings', [BuildingController::class, 'index']);
 
-    // Здания
-    Route::get('/buildings', [BuildingController::class, 'index']);
+  Route::get('/activities', [ActivityController::class, 'index']);
 
-    // Деятельности
-    Route::get('/activities', [ActivityController::class, 'index']);
-
-    // Организации
-    Route::get('/organizations/building/{buildingId}', [OrganizationController::class, 'getOrganizationsByBuilding']);
-    Route::get('/organizations/activity/{activityId}', [OrganizationController::class, 'getOrganizationsByActivity']);
-    Route::get('/organizations/radius', [OrganizationController::class, 'getOrganizationsInRadius']);
-    Route::get('/organizations/{id}', [OrganizationController::class, 'getOrganizationById']);
-    Route::get('/organizations/search', [OrganizationController::class, 'searchOrganizationsByName']);
-    Route::get('/organizations/activity/tree/{activityId}', [OrganizationController::class, 'searchOrganizationsByActivity']);
-
+  Route::get('organizations/building/{building_id}', [OrganizationController::class, 'getOrganizationsByBuilding']);
+  Route::get('organizations/activity/{activity_id}', [OrganizationController::class, 'getOrganizationsByActivity']);
+  Route::get('organizations/nearby', [OrganizationController::class, 'getOrganizationsNearby']);
+  Route::get('organizations/{id}', [OrganizationController::class, 'show']);
+  Route::get('organizations/search/name/{name}', [OrganizationController::class, 'searchByName']);
+  Route::get('organizations/search/activity/{activity_name}', [OrganizationController::class, 'searchByActivity']);
 });

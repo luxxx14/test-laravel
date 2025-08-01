@@ -3,246 +3,269 @@
 namespace App\Http\Controllers;
 
 use App\Models\Organization;
-use App\Models\Activity;
 use App\Models\Building;
+use App\Models\Activity;
 use Illuminate\Http\Request;
+//use Illuminate\Support\Facades\Validator;
 
 /**
- * @OA\Info(title="Organization API", version="1.0")
- * @OA\Server(url="http://localhost/api")
+ * @OA\Tag(
+ *     name="Organizations",
+ *     description="API для работы с организациями"
+ * )
  */
 class OrganizationController extends Controller
 {
-    
-    /**
-     * @OA\Get(
-     *     path="/api/organizations/building/{buildingId}",
-     *     summary="Список всех организаций в здании",
-     *     description="Получить список всех организаций, находящихся в здании по его ID",
-     *     @OA\Parameter(
-     *         name="buildingId",
-     *         in="path",
-     *         required=true,
-     *         description="ID здания",
-     *         @OA\Schema(type="integer")
-     *     ),
-     *     @OA\Response(
-     *         response=200,
-     *         description="Список организаций",
-     *         @OA\JsonContent(type="array", @OA\Items(ref="#/components/schemas/Organization"))
-     *     ),
-     *     @OA\Response(response=404, description="Здание не найдено")
-     * )
-     */
-    public function getOrganizationsByBuilding($buildingId)
-    {
-        $building = Building::find($buildingId);
-        if (!$building) {
-            return response()->json(['error' => 'Building not found'], 404);
-        }
+  /**
+   * Список всех организаций, находящихся в конкретном здании
+   * 
+   * @OA\Get(
+   *     path="/api/organizations/building/{building_id}",
+   *     summary="Получить список организаций в здании",
+   *     tags={"Organizations"},
+   *     @OA\Parameter(
+   *         name="building_id",
+   *         in="path",
+   *         description="ID здания",
+   *         required=true,
+   *         @OA\Schema(type="integer")
+   *     ),
+   *     @OA\Response(
+   *         response=200,
+   *         description="Список организаций",
+   *         @OA\JsonContent(type="array", @OA\Items(ref="#/components/schemas/Organization"))
+   *     ),
+   *     @OA\Response(response=404, description="Здание не найдено")
+   * )
+   */
+  public function getOrganizationsByBuilding($building_id)
+  {
+    $building = Building::find($building_id);
 
-        $organizations = Organization::where('building_id', $buildingId)->get();
-        return response()->json($organizations);
+    if (!$building) {
+      return response()->json(['message' => 'Здание не найдено'], 404);
     }
 
-    /**
-     * @OA\Get(
-     *     path="/api/organizations/activity/{activityId}",
-     *     summary="Список организаций по виду деятельности",
-     *     description="Получить список организаций, которые выполняют указанный вид деятельности",
-     *     @OA\Parameter(
-     *         name="activityId",
-     *         in="path",
-     *         required=true,
-     *         description="ID вида деятельности",
-     *         @OA\Schema(type="integer")
-     *     ),
-     *     @OA\Response(
-     *         response=200,
-     *         description="Список организаций по виду деятельности",
-     *         @OA\JsonContent(type="array", @OA\Items(ref="#/components/schemas/Organization"))
-     *     ),
-     *     @OA\Response(response=404, description="Вид деятельности не найден")
-     * )
-     */
-    public function getOrganizationsByActivity($activityId)
-    {
-        $activity = Activity::find($activityId);
-        if (!$activity) {
-            return response()->json(['error' => 'Activity not found'], 404);
-        }
+    $organizations = Organization::where('building_id', $building_id)->get();
+    return response()->json($organizations);
+  }
 
-        $organizations = Organization::whereHas('activities', function ($query) use ($activityId) {
-            $query->where('id', $activityId);
-        })->get();
+  /**
+   * Список всех организаций, относящихся к виду деятельности
+   * 
+   * @OA\Get(
+   *     path="/api/organizations/activity/{activity_id}",
+   *     summary="Получить список организаций по виду деятельности",
+   *     tags={"Organizations"},
+   *     @OA\Parameter(
+   *         name="activity_id",
+   *         in="path",
+   *         description="ID вида деятельности",
+   *         required=true,
+   *         @OA\Schema(type="integer")
+   *     ),
+   *     @OA\Response(
+   *         response=200,
+   *         description="Список организаций",
+   *         @OA\JsonContent(type="array", @OA\Items(ref="#/components/schemas/Organization"))
+   *     ),
+   *     @OA\Response(response=404, description="Вид деятельности не найден")
+   * )
+   */
+  public function getOrganizationsByActivity($activity_id)
+  {
+    $activity = Activity::find($activity_id);
 
-        return response()->json($organizations);
+    if (!$activity) {
+      return response()->json(['message' => 'Вид деятельности не найден'], 404);
     }
 
-    /**
-     * @OA\Get(
-     *     path="/api/organizations/radius",
-     *     summary="Список организаций в радиусе",
-     *     description="Получить список организаций в заданном радиусе от определенной точки",
-     *     @OA\Parameter(
-     *         name="latitude",
-     *         in="query",
-     *         required=true,
-     *         description="Широта точки",
-     *         @OA\Schema(type="number", format="float")
-     *     ),
-     *     @OA\Parameter(
-     *         name="longitude",
-     *         in="query",
-     *         required=true,
-     *         description="Долгота точки",
-     *         @OA\Schema(type="number", format="float")
-     *     ),
-     *     @OA\Parameter(
-     *         name="radius",
-     *         in="query",
-     *         required=true,
-     *         description="Радиус поиска в метрах",
-     *         @OA\Schema(type="integer")
-     *     ),
-     *     @OA\Response(
-     *         response=200,
-     *         description="Список организаций в радиусе",
-     *         @OA\JsonContent(type="array", @OA\Items(ref="#/components/schemas/Organization"))
-     *     ),
-     *     @OA\Response(response=400, description="Неверные параметры")
-     * )
-     */
-    public function getOrganizationsByRadius(Request $request)
-    {
-        $request->validate([
-            'latitude' => 'required|numeric',
-            'longitude' => 'required|numeric',
-            'radius' => 'required|numeric|min:0',
-        ]);
+    $organizations = Organization::whereHas('activities', function($query) use ($activity_id) {
+      $query->where('activity_id', $activity_id);
+    })->get();
 
-        $latitude = $request->input('latitude');
-        $longitude = $request->input('longitude');
-        $radius = $request->input('radius');
+    return response()->json($organizations);
+  }
 
-        $organizations = Organization::whereHas('building', function ($query) use ($latitude, $longitude, $radius) {
-            $query->whereRaw("ST_Distance_Sphere(
-                point(longitude, latitude),
-                point(?, ?)
-            ) <= ?", [$longitude, $latitude, $radius]);
-        })->get();
+  /**
+   * Список организаций в заданном радиусе или области
+   * 
+   * @OA\Get(
+   *     path="/api/organizations/nearby",
+   *     summary="Получить список организаций по географическому расположению",
+   *     tags={"Organizations"},
+   *     @OA\Parameter(
+   *         name="latitude",
+   *         in="query",
+   *         description="Широта точки",
+   *         required=true,
+   *         @OA\Schema(type="number", format="float")
+   *     ),
+   *     @OA\Parameter(
+   *         name="longitude",
+   *         in="query",
+   *         description="Долгота точки",
+   *         required=true,
+   *         @OA\Schema(type="number", format="float")
+   *     ),
+   *     @OA\Parameter(
+   *         name="radius",
+   *         in="query",
+   *         description="Радиус поиска в километрах",
+   *         required=true,
+   *         @OA\Schema(type="number", format="float")
+   *     ),
+   *     @OA\Response(
+   *         response=200,
+   *         description="Список организаций",
+   *         @OA\JsonContent(type="array", @OA\Items(ref="#/components/schemas/Organization"))
+   *     ),
+   *     @OA\Response(response=404, description="Организации не найдены")
+   * )
+   */
+  public function getOrganizationsNearby(Request $request)
+  {
+    $latitude = $request->query('latitude');
+    $longitude = $request->query('longitude');
+    $radius = $request->query('radius');
 
-        return response()->json($organizations);
+    $organizations = Organization::whereRaw("
+        ST_Distance_Sphere(
+            point(longitude, latitude), 
+            point(?, ?)
+        ) <= ? * 1000
+    ", [$longitude, $latitude, $radius])->get();
+
+    return response()->json($organizations);
+  }
+
+  /**
+   * Получить организацию по её идентификатору
+   * 
+   * @OA\Get(
+   *     path="/api/organizations/{id}",
+   *     summary="Получить организацию по ID",
+   *     tags={"Organizations"},
+   *     @OA\Parameter(
+   *         name="id",
+   *         in="path",
+   *         description="ID организации",
+   *         required=true,
+   *         @OA\Schema(type="integer")
+   *     ),
+   *     @OA\Response(
+   *         response=200,
+   *         description="Информация об организации",
+   *         @OA\JsonContent(ref="#/components/schemas/Organization")
+   *     ),
+   *     @OA\Response(response=404, description="Организация не найдена")
+   * )
+   */
+  public function show($id)
+  {
+    $organization = Organization::find($id);
+
+    if (!$organization) {
+      return response()->json(['message' => 'Организация не найдена'], 404);
     }
 
-    /**
-     * @OA\Get(
-     *     path="/api/organizations/{id}",
-     *     summary="Получить организацию по ID",
-     *     description="Получить информацию о организации по её ID",
-     *     @OA\Parameter(
-     *         name="id",
-     *         in="path",
-     *         required=true,
-     *         description="ID организации",
-     *         @OA\Schema(type="integer")
-     *     ),
-     *     @OA\Response(
-     *         response=200,
-     *         description="Информация об организации",
-     *         @OA\JsonContent(ref="#/components/schemas/Organization")
-     *     ),
-     *     @OA\Response(response=404, description="Организация не найдена")
-     * )
-     */
-    public function getOrganizationById(Request $request)
-    {
-        $request->validate([
-            'id' => 'required|integer|exists:organizations,id',
-        ]);
+    return response()->json($organization);
+  }
 
-        $organization = Organization::with(['building', 'activities'])->findOrFail($request->id);
+  /**
+   * Поиск организаций по названию
+   * 
+   * @OA\Get(
+   *     path="/api/organizations/search/name/{name}",
+   *     summary="Поиск организации по названию",
+   *     tags={"Organizations"},
+   *     @OA\Parameter(
+   *         name="name",
+   *         in="path",
+   *         description="Название организации",
+   *         required=true,
+   *         @OA\Schema(type="string")
+   *     ),
+   *     @OA\Response(
+   *         response=200,
+   *         description="Список организаций",
+   *         @OA\JsonContent(type="array", @OA\Items(ref="#/components/schemas/Organization"))
+   *     ),
+   *     @OA\Response(response=404, description="Организации не найдены")
+   * )
+   */
+  public function searchByName($name)
+  {
+    $organizations = Organization::where('name', 'like', "%$name%")->get();
 
-        return response()->json($organization);
+    if ($organizations->isEmpty()) {
+      return response()->json(['message' => 'Организации не найдены'], 404);
     }
 
-    /**
-     * @OA\Get(
-     *     path="/api/organizations/activity/tree/{activityId}",
-     *     summary="Поиск организаций по виду деятельности с учетом вложенности",
-     *     description="Поиск организаций по виду деятельности, включая вложенные виды деятельности",
-     *     @OA\Parameter(
-     *         name="activityId",
-     *         in="path",
-     *         required=true,
-     *         description="ID вида деятельности",
-     *         @OA\Schema(type="integer")
-     *     ),
-     *     @OA\Response(
-     *         response=200,
-     *         description="Список организаций с учетом вложенности",
-     *         @OA\JsonContent(type="array", @OA\Items(ref="#/components/schemas/Organization"))
-     *     ),
-     *     @OA\Response(response=404, description="Вид деятельности не найден")
-     * )
-     */
-    public function searchOrganizationsByActivity(Request $request)
-    {
-        $request->validate([
-            'activityName' => 'required|string|max:255',
-        ]);
+    return response()->json($organizations);
+  }
 
-        $activityName = $request->input('activityName');
+  /**
+   * Поиск организаций по виду деятельности с ограничением на 3 уровня вложенности
+   * 
+   * @OA\Get(
+   *     path="/api/organizations/search/activity/{activity_name}",
+   *     summary="Поиск организаций по виду деятельности",
+   *     tags={"Organizations"},
+   *     @OA\Parameter(
+   *         name="activity_name",
+   *         in="path",
+   *         description="Название вида деятельности",
+   *         required=true,
+   *         @OA\Schema(type="string")
+   *     ),
+   *     @OA\Response(
+   *         response=200,
+   *         description="Список организаций",
+   *         @OA\JsonContent(type="array", @OA\Items(ref="#/components/schemas/Organization"))
+   *     ),
+   *     @OA\Response(response=404, description="Организации не найдены")
+   * )
+   */
+  public function searchByActivity(Request $request, $activity_name)
+  {
+    // Получаем основной вид деятельности
+    $activity = Activity::where('name', $activity_name)->first();
 
-        $activities = Activity::where('name', 'LIKE', "%{$activityName}%")
-            ->where('level', '<=', 3) // Ограничение вложенности
-            ->pluck('id');
-
-        if ($activities->isEmpty()) {
-            return response()->json(['error' => 'No activities found'], 404);
-        }
-
-        $organizations = Organization::whereHas('activities', function ($query) use ($activities) {
-            $query->whereIn('id', $activities);
-        })->get();
-
-        return response()->json($organizations);
+    if (!$activity) {
+      return response()->json(['message' => 'Вид деятельности не найден'], 404);
     }
 
-    /**
-     * @OA\Get(
-     *     path="/api/organizations/search",
-     *     summary="Поиск организаций по названию",
-     *     description="Поиск организаций по названию",
-     *     @OA\Parameter(
-     *         name="name",
-     *         in="query",
-     *         required=true,
-     *         description="Название организации",
-     *         @OA\Schema(type="string")
-     *     ),
-     *     @OA\Response(
-     *         response=200,
-     *         description="Список организаций по названию",
-     *         @OA\JsonContent(type="array", @OA\Items(ref="#/components/schemas/Organization"))
-     *     ),
-     *     @OA\Response(response=404, description="Организация не найдена")
-     * )
-     */
-    public function searchOrganizationsByName(Request $request)
-    {
-        $request->validate([
-            'name' => 'required|string|max:255',
-        ]);
-    
-        $name = $request->input('name');
+    // Получаем все дочерние виды деятельности до 3 уровней
+    $activities = $this->getActivitiesByLevel($activity, 3);
 
-        $organizations = Organization::where('name', 'LIKE', "%{$name}%")->get();
+    // Составляем список всех организаций, относящихся к этим видам деятельности
+    $organizations = Organization::whereHas('activities', function($query) use ($activities) {
+      $query->whereIn('activity_id', $activities);
+    })->get();
 
-        if ($organizations->isEmpty()) {
-            return response()->json(['error' => 'No organizations found'], 404);
-        }
-
-        return response()->json($organizations);
+    if ($organizations->isEmpty()) {
+      return response()->json(['message' => 'Организации не найдены'], 404);
     }
+
+    return response()->json($organizations);
+  }
+
+  private function getActivitiesByLevel(Activity $activity, int $maxLevel, $currentLevel = 1)
+  {
+    // Останавливаем рекурсию, если достигли максимального уровня
+    if ($currentLevel > $maxLevel) {
+      return [];
+    }
+
+    // Получаем текущую активность и все её дочерние
+    $activities = [$activity->id];
+    $children = $activity->children;
+
+    foreach ($children as $child) {
+      $activities = array_merge($activities, $this->getActivitiesByLevel($child, $maxLevel, $currentLevel + 1));
+    }
+
+    return $activities;
+  }
 }

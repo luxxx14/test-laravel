@@ -4,12 +4,10 @@
  * @OA\Schema(
  *     schema="Organization",
  *     type="object",
- *     required={"name", "building_id"},
- *     @OA\Property(property="id", type="integer", description="ID организации"),
- *     @OA\Property(property="name", type="string", description="Название организации"),
- *     @OA\Property(property="building_id", type="integer", description="ID здания"),
- *     @OA\Property(property="created_at", type="string", format="date-time", description="Дата создания"),
- *     @OA\Property(property="updated_at", type="string", format="date-time", description="Дата обновления")
+ *     required={"name", "phone_numbers", "building_id"},
+ *     @OA\Property(property="name", type="string", example="ООО Рога и Копыта"),
+ *     @OA\Property(property="phone_numbers", type="array", items=@OA\Items(type="string"), example={"2-222-222", "3-333-333"}),
+ *     @OA\Property(property="building_id", type="integer", example=1)
  * )
  */
 
@@ -19,16 +17,16 @@ use Illuminate\Database\Eloquent\Model;
 
 class Organization extends Model
 {
-    protected $fillable = ['name', 'phone_numbers', 'building_id'];
+  protected $fillable = ['name', 'phone_numbers', 'building_id'];
 
-    public function building()
-    {
-        return $this->belongsTo(Building::class);
-    }
+  public function building()
+  {
+    return $this->belongsTo(Building::class);
+  }
 
-    public function activities()
-    {
-        return $this->belongsToMany(Activity::class);
-    }
+  public function activities()
+  {
+    return $this->belongsToMany(Activity::class);
+  }
 }
 

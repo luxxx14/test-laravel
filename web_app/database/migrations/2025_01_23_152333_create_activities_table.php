@@ -6,24 +6,20 @@ use Illuminate\Support\Facades\Schema;
 
 class CreateActivitiesTable extends Migration
 {
-    /**
-     * @return void
-     */
-    public function up()
-    {
-        Schema::create('activities', function (Blueprint $table) {
-            $table->id();
-            $table->string('name')->unique();
-            $table->foreignId('parent_id')->nullable()->constrained('activities')->onDelete('restrict');
-            $table->timestamps();
-        });
-    }
+  public function up()
+  {
+    Schema::create('activities', function (Blueprint $table) {
+      $table->id();
+      $table->string('name')->unique();
+      $table->unsignedBigInteger('parent_id')->nullable();
+      $table->timestamps();
 
-    /**
-     * @return void
-     */
-    public function down()
-    {
-        Schema::dropIfExists('activities');
-    }
+      $table->foreign('parent_id')->references('id')->on('activities')->onDelete('restrict');
+    });
+  }
+
+  public function down()
+  {
+    Schema::dropIfExists('activities');
+  }
 }
