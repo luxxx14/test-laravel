@@ -12,6 +12,7 @@
 1. git clone https://github.com/luxxx14/test-laravel.git .
 2. cp .env.example .env (в windowns - скопировать файл .env.example в .env)
 3. make up
+4. Приложение будет запущено и доступно на порте 8080
 
 ## Остановка приложения
 1. make down
