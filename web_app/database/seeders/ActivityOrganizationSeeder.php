@@ -23,8 +23,6 @@ class ActivityOrganizationSeeder extends Seeder
         DB::table('activity_organization')->insert([
           'organization_id' => $organization->id,
           'activity_id' => $activity->id,
-          'created_at' => now(),
-          'updated_at' => now(),
         ]);
       }
     }

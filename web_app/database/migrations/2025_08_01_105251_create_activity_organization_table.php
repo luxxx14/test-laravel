@@ -1,32 +1,28 @@
 <?php
 
-namespace Database\Seeders;
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
-use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\DB;
-use App\Models\Activity;
-use App\Models\Organization;
-
-class ActivityOrganizationSeeder extends Seeder
+class CreateActivityOrganizationTable extends Migration
 {
-  public function run()
-  {
-    $organizations = Organization::all();
-    $activities = Activity::all();
-
-    if ($organizations->isEmpty() || $activities->isEmpty()) {
-      return;
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+      Schema::create('activity_organization', function (Blueprint $table) {
+        $table->foreignId('activity_id')->constrained()->onDelete('restrict');
+        $table->foreignId('organization_id')->constrained()->onDelete('restrict');
+        $table->primary(['activity_id', 'organization_id']);
+      });
     }
 
-    foreach ($organizations as $organization) {
-      foreach ($activities as $activity) {
-        DB::table('activity_organization')->insert([
-          'organization_id' => $organization->id,
-          'activity_id' => $activity->id,
-          'created_at' => now(),
-          'updated_at' => now(),
-        ]);
-      }
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        Schema::dropIfExists('activity_organization');
     }
-  }
-}
+};

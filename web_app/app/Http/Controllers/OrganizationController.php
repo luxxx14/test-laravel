@@ -6,7 +6,6 @@ use App\Models\Organization;
 use App\Models\Building;
 use App\Models\Activity;
 use Illuminate\Http\Request;
-//use Illuminate\Support\Facades\Validator;
 
 /**
  * @OA\Tag(

@@ -10,7 +10,8 @@
 ## Запуск приложения
 
 1. git clone https://github.com/luxxx14/test-laravel.git .
-2. make up
+2. cp .env.example .env (в windowns - скопировать файл .env.example в .env)
+3. make up
 
 ## Остановка приложения
 1. make down
