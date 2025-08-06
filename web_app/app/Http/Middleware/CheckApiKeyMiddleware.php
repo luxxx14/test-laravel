@@ -4,13 +4,13 @@ namespace App\Http\Middleware;
 use Closure;
 use Illuminate\Http\Request;
 
-class CheckApiKey
+class CheckApiKeyMiddleware
 {
   public function handle(Request $request, Closure $next)
   {
     $apiKey = $request->header('X-API-KEY');
 
-    if ($apiKey !== config('api.api_key')) {
+    if ($apiKey !== env('API_KEY')) {
       return response()->json(['error' => 'Unauthorized'], 401);
     }
 

@@ -5,7 +5,9 @@ use App\Http\Controllers\OrganizationController;
 use App\Http\Controllers\BuildingController;
 use App\Http\Controllers\ActivityController;
 
-Route::middleware('api_key')->prefix('api')->group(function () {
+use App\Http\Middleware\CheckApiKeyMiddleware;
+
+Route::middleware(CheckApiKeyMiddleware::class)->group(function () {
   Route::get('/buildings', [BuildingController::class, 'index']);
 
   Route::get('/activities', [ActivityController::class, 'index']);

@@ -31,6 +31,13 @@ class OrganizationsTableSeeder extends Seeder
         'created_at' => now(),
         'updated_at' => now(),
       ],
+      [
+        'name' => 'еще одно ООО Рога и Копыта',
+        'phone_numbers' => json_encode(['2-222-222', '3-333-333']),
+        'building_id' => 1,
+        'created_at' => now(),
+        'updated_at' => now(),
+      ],
     ]);
   }
 }
