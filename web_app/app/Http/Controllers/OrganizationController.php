@@ -124,16 +124,21 @@ class OrganizationController extends Controller
    */
   public function getOrganizationsNearby(Request $request)
   {
-    $latitude = $request->query('latitude');
-    $longitude = $request->query('longitude');
+    $latitude = $request->query('lat');
+    $longitude = $request->query('lon');
     $radius = $request->query('radius');
 
-    $organizations = Organization::whereRaw("
-        ST_Distance_Sphere(
-            point(longitude, latitude), 
-            point(?, ?)
-        ) <= ? * 1000
-    ", [$longitude, $latitude, $radius])->get();
+    $buildings = Building::whereRaw("
+          ST_Distance_Sphere(
+              point(longitude, latitude), 
+              point(?, ?)
+          ) <= ? * 1000
+      ", [$longitude, $latitude, $radius])
+      ->get();
+
+    $organizations = $buildings->flatMap(function($building) {
+      return $building->organizations;
+    });
 
     return response()->json($organizations);
   }
