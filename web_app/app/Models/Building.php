@@ -1,5 +1,9 @@
 <?php
 
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+
 /**
  * @OA\Schema(
  *     schema="Building",
@@ -13,11 +17,6 @@
  *     @OA\Property(property="updated_at", type="string", format="date-time", example="2025-08-01T11:15:26")
  * )
  */
-
-namespace App\Models;
-
-use Illuminate\Database\Eloquent\Model;
-
 class Building extends Model
 {
   protected $fillable = ['address', 'latitude', 'longitude'];

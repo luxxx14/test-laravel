@@ -1,5 +1,10 @@
 <?php
 
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+
 /**
  * @OA\Schema(
  *     schema="Activity",
@@ -9,12 +14,6 @@
  *     @OA\Property(property="name", type="string", example="Молочная продукция"),
  * )
  */
-
-namespace App\Models;
-
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
-
 class Activity extends Model
 {
   use HasFactory;
