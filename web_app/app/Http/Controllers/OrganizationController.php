@@ -37,7 +37,7 @@ class OrganizationController extends Controller
    *     @OA\Response(response=404, description="Здание не найдено")
    * )
    */
-  public function getOrganizationsByBuilding($building_id)
+  public function getOrganizationsByBuilding(int $building_id)
   {
     $building = Building::find($building_id);
 
@@ -71,7 +71,7 @@ class OrganizationController extends Controller
    *     @OA\Response(response=404, description="Вид деятельности не найден")
    * )
    */
-  public function getOrganizationsByActivity($activity_id)
+  public function getOrganizationsByActivity(int $activity_id)
   {
     $activity = Activity::find($activity_id);
 
@@ -165,7 +165,7 @@ class OrganizationController extends Controller
    *     @OA\Response(response=404, description="Организация не найдена")
    * )
    */
-  public function show($id)
+  public function show(int $id)
   {
     $organization = Organization::find($id);
 
